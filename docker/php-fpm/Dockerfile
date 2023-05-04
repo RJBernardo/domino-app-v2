@@ -7,6 +7,8 @@ RUN apt-get update \
 
 WORKDIR /var/www/myapp
 
+RUN chmod 777 .
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer self-update --1
 #RUN composer install
