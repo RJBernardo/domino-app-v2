@@ -37,7 +37,7 @@ services:
     build: ./php-fpm
     container_name: myapp-php-fpm
     working_dir: /var/www/myapp
-    command: sh -c "composer install --ignore-platform-reqs && php artisan key:generate"
+    command: sh -c "composer install --ignore-platform-reqs"
     volumes:
       - ../cakephp:/var/www/myapp
       - ./php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
