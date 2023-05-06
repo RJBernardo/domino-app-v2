@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": ">=5.6",
+        "box/spout": "^3.3",
         "cakephp/acl": "^0.5.2",
         "cakephp/cakephp": "3.7.*",
         "cakephp/migrations": "^2.0.0",
@@ -52,6 +53,9 @@
     },
     "prefer-stable": true,
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "cakephp/plugin-installer": true
+        }
     }
 }
