@@ -243,11 +243,10 @@ class GamesController extends AppController
     public function xlsxSpout()
     {
         $query = $this->Games->find('all');
+        $users = $this->Games->Users->find('all');
+        $users->disableHydration();
         $query->disableHydration();
-        $results = $query->all();
-
-        // Once we have a result set we can get all the rows
-        $data = $results->toList();
+        $resultUsers = $users->toArray();
 
         // Converting the query to a key-value array will also execute it.
         $data = $query->toArray();
@@ -262,7 +261,6 @@ class GamesController extends AppController
         foreach ($data as $game) {
             $game['created'] = is_null($game['created']) ? '' : $game['created']->format('Y-m-d H:i:s');
             $game['modified'] = is_null($game['modified']) ? '' : $game['modified']->format('Y-m-d H:i:s');
-            $game['removed'] = is_null($game['removed']) ? '' : $game['removed']->format('Y-m-d H:i:s');
             $game['data'] = is_null($game['data']) ? '' : $game['data']->format('Y-m-d H:i:s');
             foreach ($game as $key => $value) {
                 if (is_null($value)) {
@@ -278,6 +276,30 @@ class GamesController extends AppController
 
             }
         }
+
+        $writer->addNewSheetAndMakeItCurrent();
+        $headerRowUser = ['id', 'name', 'email', 'photo_dir', 'photo', 'active', 'removed', 'created', 'modified', 'password', 'id_jogador', 'group_id', 'role_id'];
+        $rowFromValuesUser = WriterEntityFactory::createRowFromArray($headerRowUser);
+        $writer->addRow($rowFromValuesUser);
+
+        foreach ($resultUsers as $user) {
+            $user['created'] = is_null($user['created']) ? '' : $user['created']->format('Y-m-d H:i:s');
+            $user['modified'] = is_null($user['modified']) ? '' : $user['modified']->format('Y-m-d H:i:s');
+            foreach ($user as $key => $value) {
+                if (is_null($value)) {
+                    $user[$key] = "";
+                }
+            }
+            // echo '<pre>' . var_export($game, true) . '</pre>';
+            // die;
+            try {
+                $row = WriterEntityFactory::createRowFromArray((array) $user);
+                $writer->addRow($row);
+            } catch (Exception $e) {
+
+            }
+        }
+
         $writer->close();
 
         $this->RequestHandler->respondAs('xlsx');
