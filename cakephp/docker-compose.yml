@@ -15,18 +15,22 @@ services:
       - '82:80'
     networks:
       - app-network
-  mysql:
-    image: mysql:5.7.22
-    ports:
-      - "3306:3306"
+
+  myapp-mysql:
+    image: 'mysql:8.0'
+    container_name: myapp-mysql
+    working_dir: /var/www/myapp
     volumes:
       - .dbdata:/var/bin/mysql
+    ports:
+      - "8107:3306"
     environment:
-      MYSQL_DATABASE: root
-      MYSQL_ROOT_PASSWORD: root
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     networks:
       - app-network
-
 networks:
   app-network:
     driver: bridge
