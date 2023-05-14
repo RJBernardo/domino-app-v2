@@ -23,9 +23,10 @@ services:
 
   domino:
     build: ./php-fpm
-    image: 'francisconazevedo/php-service:7.4'
+    image: 'domino/php-service:7.4'
     container_name: domino_app
     restart: always
+    command: sh -c "composer self-update --1 && composer install --ignore-platform-reqs"
     volumes:
       - ../cakephp:/app
       - ./php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
