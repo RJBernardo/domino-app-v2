@@ -140,7 +140,7 @@ class GamesController extends AppController
                     Sum(G.cheat) as qtd_merdas
                 FROM `games` G
                 Join `users` U On U.id = G.user_id
-                WHERE G.data = DATE(NOW())
+                WHERE G.data between DATE_ADD(DATE(NOW()), INTERVAL -1 DAY) AND DATE(NOW())
                 GROUP By
                     G.data,
                     G.user_id,
