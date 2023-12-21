@@ -4,14 +4,14 @@
 version: '3.1'
 services:
 
-  myapp-mysql:
+  domino_v2-mysql:
     image: 'mysql:8.0'
-    container_name: myapp-mysql
-    working_dir: /var/www/myapp
+    container_name: domino_v2-mysql
+    working_dir: /var/www/domino_v2
     volumes:
         - ../mysql:/var/lib/mysql
         - ../mysql-files:/var/lib/mysql-files
-        - ../cakephp:/var/www/myapp
+        - ../cakephp:/var/www/domino_v2
         - ./mysql/my.cnf:/etc/mysql/my.cnf
     ports:
       - "8107:3306"
@@ -21,10 +21,10 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
-  domino:
+  domino_v2:
     build: ./php-fpm
-    image: 'domino/php-service:7.4'
-    container_name: domino_app
+    image: 'domino_v2/php-service:7.4'
+    container_name: domino_v2_app
     restart: always
     command: sh -c "composer self-update --1 && composer install --ignore-platform-reqs"
     volumes:
@@ -34,4 +34,4 @@ services:
     ports:
       - '8181:80'
     links:
-      - myapp-mysql
+      - domino_v2-mysql
