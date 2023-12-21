@@ -18,6 +18,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenDate|null $created
  * @property \Cake\I18n\FrozenDate|null $modified
  * @property int|null $created_by
+ * @property double|null $value
  *
  * @property \App\Model\Entity\User $user
  */
@@ -49,6 +50,7 @@ class Game extends Entity
         'week' => true,
         'year' => true,
         'month' => true,
-        'qtd_win' => true
+        'qtd_win' => true,
+        'value' => true
     ];
 }
