@@ -14,7 +14,7 @@ services:
         - ../cakephp:/var/www/domino_v2
         - ./mysql/my.cnf:/etc/mysql/my.cnf
     ports:
-      - "8107:3306"
+      - "8109:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
@@ -32,6 +32,6 @@ services:
       - ./php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
     working_dir: "/app"
     ports:
-      - '8181:80'
+      - '8184:80'
     links:
       - domino_v2-mysql
