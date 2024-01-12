@@ -55,13 +55,18 @@ class UsersController extends AppController
             if ($this->Users->save($user)) {
                 $this->Flash->success(__(' {0} foi salvo com sucesso.', 'User'));
 
-                    return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__(' {0} não pôde ser salvo. Por favor, tente novamente.', 'User'));
         }
-        $groups = $this->Users->Groups->find('list', ['limit' => 200]);
-        $roles = $this->Users->Roles->find('list', ['limit' => 200]);
-        $this->set(compact('user', 'groups', 'roles'));
+        // $groups = $this->Users->Groups->find('list', ['limit' => 200]);
+        // $roles = $this->Users->Roles->find('list', ['limit' => 200]);
+        $this->set(
+            compact(
+                'user'
+                // , 'groups', 'roles'
+            )
+        );
     }
 
     /**
