@@ -65,7 +65,6 @@ class GamesTable extends Table
 
         $validator
             ->integer('game')
-            ->requirePresence('game', 'create')
             ->allowEmptyString('game', false);
 
         $validator
@@ -74,12 +73,10 @@ class GamesTable extends Table
 
         $validator
             ->scalar('type_game')
-            ->requirePresence('type_game', 'create')
             ->allowEmptyString('type_game', false);
 
         $validator
             ->integer('qtd_games')
-            ->requirePresence('qtd_games', 'create')
             ->allowEmptyString('qtd_games', false);
 
         $validator

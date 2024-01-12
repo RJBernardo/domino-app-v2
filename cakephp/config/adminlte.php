@@ -1,4 +1,4 @@
-<?php 
+<?php
 return [
     'Theme' => [
         'title' => 'Dominó',
@@ -12,7 +12,7 @@ return [
             'show_social' => false
         ],
         'folder' => ROOT,
-        'skin' => 'blue'
+        'skin' => 'red'
     ]
 ];
 

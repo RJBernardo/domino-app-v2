@@ -231,3 +231,5 @@ Plugin::load('AclManager', ['bootstrap' => true, 'routes' => true]);
     ->useLocaleParser();
 
 setlocale(LC_ALL, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+
+Configure::write('DebugKit.forceEnable', true);

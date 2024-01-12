@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Datasource\ConnectionManager;
 use Cake\I18n\Time;
+
 /**
  * Home Controller
  *
@@ -35,7 +36,8 @@ class HomeController extends AppController
                             Sum(G.qtd_games) as qtd_games,
                             Sum(G.qtd_win) as qtd_win,
                             (Sum(G.qtd_win) / Sum(G.qtd_games)) * 100 as Perc_Vit,
-                            Sum(G.cheat) as qtd_merdas
+                            Sum(G.cheat) as qtd_merdas,
+                            Sum(G.value) as value
                         FROM games G
                         Join users U On U.id 	 = G.user_id
                                     and U.active = 'S'
@@ -45,8 +47,7 @@ class HomeController extends AppController
                             G.month,
                             G.user_id,
                             U.name
-                        Having
-                            Count(Distinct(G.data)) >= 8
+
                         Order By
                             G.month,
                             Perc_Vit desc,
@@ -56,8 +57,8 @@ class HomeController extends AppController
                             qtd_games desc,
                             U.name";
 
-         // RANKING ANUAL
-         $sqlAnual = "SELECT
+        // RANKING ANUAL
+        $sqlAnual = "SELECT
                             G.year,
                             G.user_id,
                             U.name,
@@ -65,7 +66,8 @@ class HomeController extends AppController
                             Sum(G.qtd_games) as qtd_games,
                             Sum(G.qtd_win) as qtd_win,
                             (Sum(G.qtd_win) / Sum(G.qtd_games)) * 100 as Perc_Vit,
-                            Sum(G.cheat) as qtd_merdas
+                            Sum(G.cheat) as qtd_merdas,
+                            Sum(G.value) as value
                         FROM games G
                         Join users U On U.id 	 = G.user_id
                                     and U.active = 'S'
@@ -74,8 +76,6 @@ class HomeController extends AppController
                             G.year,
                             G.user_id,
                             U.name
-                        Having
-                            Count(Distinct(G.data)) >= 30
                         Order By
                             G.year,
                             Perc_Vit desc,
@@ -94,7 +94,8 @@ class HomeController extends AppController
                             Sum(G.qtd_games) as qtd_games,
                             Sum(G.qtd_win) as qtd_win,
                             (Sum(G.qtd_win) / Sum(G.qtd_games)) * 100 as Perc_Vit,
-                            Sum(G.cheat) as qtd_merdas
+                            Sum(G.cheat) as qtd_merdas,
+                            Sum(G.value) as value
                         FROM games G
                         Join users U On U.id 	 = G.user_id
                                     and U.active = 'S'
@@ -103,8 +104,6 @@ class HomeController extends AppController
                             G.year,
                             G.user_id,
                             U.name
-                        Having
-                            Count(Distinct(G.data)) >= 30
                         Order By
                             G.year,
                             Perc_Vit desc,
@@ -121,15 +120,14 @@ class HomeController extends AppController
                             Sum(G.qtd_games) as qtd_games,
                             Sum(G.qtd_win) as qtd_win,
                             (Sum(G.qtd_win) / Sum(G.qtd_games)) * 100 as Perc_Vit,
-                            Sum(G.cheat) as qtd_merdas
+                            Sum(G.cheat) as qtd_merdas,
+                            Sum(G.value) as value
                         FROM games G
                         Join users U On U.id 	 = G.user_id
                                     and U.active = 'S'
                         GROUP By
                             G.user_id,
                             U.name
-                        Having
-                            Count(Distinct(G.data)) >= 30
                         Order By
                             Perc_Vit desc,
                             qtd_merdas,
@@ -144,7 +142,8 @@ class HomeController extends AppController
                         U.name,
                         COUNT(Distinct(G.data)) as qtd_diasjogados,
                         Sum(G.cheat) as qtd_merdas,
-                        (Sum(G.cheat) / Count(Distinct(G.data))) * 100 as Perc_Merdas
+                        (Sum(G.cheat) / Count(Distinct(G.data))) * 100 as Perc_Merdas,
+                        Sum(G.value) as value
                     FROM games G
                     Join users U On U.id 	 = G.user_id
                                 and U.active = 'S'
@@ -158,7 +157,8 @@ class HomeController extends AppController
                         U.name";
 
         // CONSULTAS
-        $connection = ConnectionManager::get('default'); $resultsDiario = $this->consultaDiaria();
+        $connection = ConnectionManager::get('default');
+        $resultsDiario = $this->consultaDiaria();
         $resultsSemanal = $this->consultaSemanal();
         $resultsMensal = $connection->execute($sqlMensal)->fetchAll('assoc');
         $resultsAnual = $connection->execute($sqlAnual)->fetchAll('assoc');
@@ -170,10 +170,11 @@ class HomeController extends AppController
     }
 
     // RANKING DIÁRIO
-    private function consultaDiaria(){
+    private function consultaDiaria()
+    {
         $date = Time::now()->i18nFormat('yyyy-MM-dd');
         if ($this->request->is('post')) {
-            $date =  new Time(str_replace("/", "-", $this->request->getData('datenow')));
+            $date = new Time(str_replace("/", "-", $this->request->getData('datenow')));
             $date = $date->i18nFormat('yyyy-MM-dd');
             $datenow = $this->request->getData('datenow');
             $this->set(compact('datenow'));
@@ -185,12 +186,13 @@ class HomeController extends AppController
                             Sum(G.qtd_games) as qtd_games,
                             Sum(G.qtd_win) as qtd_win,
                             (Sum(G.qtd_win) / Sum(G.qtd_games)) * 100 as Perc_Vit,
-                            Sum(G.cheat) as qtd_merdas
+                            Sum(G.cheat) as qtd_merdas,
+                            Sum(G.value) as value
                         FROM games G
                         Join users U On U.id 	 = G.user_id
                                 and U.active = 'S'
                         WHERE G.data = '" . $date . "'";
-                        $sqlDiario .= "GROUP By
+        $sqlDiario .= "GROUP By
                             G.data,
                             G.user_id,
                             U.name
@@ -205,7 +207,8 @@ class HomeController extends AppController
     }
 
     // RANKING SEMANAL
-    private function consultaSemanal(){
+    private function consultaSemanal()
+    {
         $sqlSemanal = "SELECT
                             G.week,
                             G.user_id,
@@ -214,7 +217,8 @@ class HomeController extends AppController
                             Sum(G.qtd_games) as qtd_games,
                             Sum(G.qtd_win) as qtd_win,
                             (Sum(G.qtd_win) / Sum(G.qtd_games)) * 100 as Perc_Vit,
-                            Sum(G.cheat) as qtd_merdas
+                            Sum(G.cheat) as qtd_merdas,
+                            Sum(G.value) as value
                         FROM games G
                         Join users U On U.id 	 = G.user_id
                                     and U.active = 'S'
@@ -224,8 +228,7 @@ class HomeController extends AppController
                             G.week,
                             G.user_id,
                             U.name
-                        Having
-                            Count(Distinct(G.data)) >= 2
+
                         Order By
                             G.week,
                             Perc_Vit desc,
@@ -240,10 +243,11 @@ class HomeController extends AppController
     }
 
     //RANKING POR DUPLAS DIÁRIO
-    private function consultaDuplasDiario(){
+    private function consultaDuplasDiario()
+    {
         $date = Time::now()->i18nFormat('yyyy-MM-dd');
         if ($this->request->is('post')) {
-            $date =  new Time(str_replace("/", "-", $this->request->getData('datenow')));
+            $date = new Time(str_replace("/", "-", $this->request->getData('datenow')));
             $date = $date->i18nFormat('yyyy-MM-dd');
         }
         $sqlDuplasDiario = "SELECT
@@ -301,8 +305,9 @@ class HomeController extends AppController
         return $connection->execute($sqlDuplasDiario)->fetchAll('assoc');
     }
 
-     //RANKING POR DUPLAS GERAL
-     private function consultaDuplasGeral(){
+    //RANKING POR DUPLAS GERAL
+    private function consultaDuplasGeral()
+    {
         $sqlDuplasGeral = "SELECT
                             U1.Name AS Prim_User,
                             U2.Name AS Seg_User,

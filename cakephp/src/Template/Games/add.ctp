@@ -46,18 +46,10 @@
                         ?>
                         <?php echo $this->Form->control('game', ['type' => 'hidden', 'value' => '0']);
                         ?>
-                        <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2">
-                            <?php echo $this->Form->control('qtd_games');
-                            ?>
-                        </div>
-                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2">
-                            <?php echo $this->Form->control('qtd_win');
-                            ?>
-                        </div>
-                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2">
-                            <?php echo $this->Form->control('cheat');
-                            ?>
-                        </div> -->
+                        <?php echo $this->Form->control('qtd_games', ['type' => 'hidden', 'value' => '1']);
+                        ?>
+                        <?php echo $this->Form->control('qtd_win', ['type' => 'hidden', 'value' => '0']);
+                        ?>
                         <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2">
                             <?php echo $this->Form->control('value');
                             ?>

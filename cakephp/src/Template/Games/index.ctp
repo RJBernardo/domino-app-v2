@@ -57,22 +57,7 @@
                                     <?= $this->Paginator->sort('user_id') ?>
                                 </th>
                                 <th scope="col">
-                                    <?= $this->Paginator->sort('win') ?>
-                                </th>
-                                <th scope="col">
-                                    <?= $this->Paginator->sort('type_game') ?>
-                                </th>
-                                <th scope="col">
-                                    <?= $this->Paginator->sort('qtd_games') ?>
-                                </th>
-                                <th scope="col">
-                                    <?= $this->Paginator->sort('type_win_first') ?>
-                                </th>
-                                <th scope="col">
-                                    <?= $this->Paginator->sort('type_win_second') ?>
-                                </th>
-                                <th scope="col">
-                                    <?= $this->Paginator->sort('created_by') ?>
+                                    <?= $this->Paginator->sort('value') ?>
                                 </th>
                                 <th scope="col" class="actions text-center">
                                     <?= __('Ações') ?>
@@ -97,27 +82,13 @@
                                                 ->name, [
                                                     'controller' => 'Users
                                                 ',
-                                                    'action' => 'view', $game->user
+                                                    'action' => 'view',
+                                                    $game->user
                                                         ->id
                                                 ]) : '' ?>
                                     </td>
                                     <td>
-                                        <?= h($game->win) ?>
-                                    </td>
-                                    <td>
-                                        <?= h($game->type_game) ?>
-                                    </td>
-                                    <td>
-                                        <?= $this->Number->format($game->qtd_games) ?>
-                                    </td>
-                                    <td>
-                                        <?= h($game->type_win_first) ?>
-                                    </td>
-                                    <td>
-                                        <?= h($game->type_win_second) ?>
-                                    </td>
-                                    <td>
-                                        <?= $this->Number->format($game->created_by) ?>
+                                        <?= $this->Number->format($game->value) ?>
                                     </td>
                                     <td class="actions text-right">
                                         <?= $this->Html->link(

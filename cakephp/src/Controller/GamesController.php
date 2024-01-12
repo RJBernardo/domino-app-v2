@@ -80,9 +80,9 @@ class GamesController extends AppController
     public function addMany($user1 = null, $user2 = null, $user3 = null, $user4 = null)
     {
         $lastGame = $this->Games->find('all')->where(['game <>' => 0])->order(['id' => 'desc'])->first();
-        if ($this->request->is('post')) {
+        if ($this->request->is('post') || $this->request->is('put')) {
             $maxGame = $lastGame->game + 1;
-
+            $gamesToSave = [];
             $games = $this->Games->newEntities($this->request->getData('game'));
             $gamesToContinue = [];
             $ganhadores = "";
@@ -105,26 +105,20 @@ class GamesController extends AppController
                 } else {
                     $gamesToContinue[] = 0;
                 }
+                if ($game->user_id <> null && $game->value <> null) {
+
+                    array_push($gamesToSave, $game);
+
+                }
             }
-            if ($this->Games->saveMany($games)) {
-                $this->Flash->success(__(' {0} foi salvo com sucesso. A dupla ' . $ganhadores, 'Game'));
+            if ($this->Games->saveMany($gamesToSave)) {
+                $this->Flash->success(__('Jogo foi salvo com sucesso.'));
                 if ($this->request->getData('continua') == 'true' || $this->request->getData('continua_todos') == 'true') {
-                    return $this->redirect(['action' => 'addMany', $gamesToContinue[0], $gamesToContinue[1], $gamesToContinue[2], $gamesToContinue[3]]);
-                } else {
-                    return $this->redirect(['action' => 'index']);
+                    // return $this->redirect(['action' => 'addMany', $games]);
                 }
             } else {
                 $this->Flash->error(__(' {0} não pôde ser salvo. Por favor, tente novamente.', 'Game'));
             }
-        } else {
-            if ($user1 != null)
-                $games[] = $this->Games->newEntity(['user_id' => $user1]);
-            if ($user2 != null)
-                $games[] = $this->Games->newEntity(['user_id' => $user2]);
-            if ($user3 != null)
-                $games[] = $this->Games->newEntity(['user_id' => $user3]);
-            if ($user4 != null)
-                $games[] = $this->Games->newEntity(['user_id' => $user4]);
         }
         //B => Bomba,\nL => Lasquina,\nS => Simples,\nBL => Bomba Lasquina,\nFN => Fechou natural,\nFF => Fechou Querendo / 'FNP' => 'Fechou Natural - Perdeu', 'M' => 'Merda'
         $type_win = ['' => 'Selecione', 'S' => 'Simples', 'L' => 'Lasquina', 'B' => 'Bomba', 'BL' => 'Bomba Lasquina', 'FNG' => 'Fechou Natural - Ganhou', 'FFG' => 'Fechou Querendo - Ganhou', 'FFP' => 'Fechou Querendo - Perdeu', 'M' => 'Merda'];
@@ -137,7 +131,8 @@ class GamesController extends AppController
                     Sum(G.qtd_games) as qtd_games,
                     Sum(G.qtd_win) as qtd_win,
                     (Sum(G.qtd_win) / Sum(G.qtd_games)) * 100 as Perc_Vit,
-                    Sum(G.cheat) as qtd_merdas
+                    Sum(G.cheat) as qtd_merdas,
+                    SUM(G.value) as value
                 FROM `games` G
                 Join `users` U On U.id = G.user_id
                 WHERE G.data between DATE_ADD(DATE(NOW()), INTERVAL -1 DAY) AND DATE(NOW())
@@ -254,7 +249,7 @@ class GamesController extends AppController
 
         $writer = WriterEntityFactory::createXLSXWriter(); // for XLSX files
         $writer->openToBrowser($fileName); // stream data directly to the browser
-        $headerRow = ['id', 'year', 'month', 'week', 'data', 'game', 'user_id', 'win', 'type_game', 'qtd_games', 'qtd_win', 'type_win_first', 'type_win_second', 'created', 'modified', 'created_by', 'cheat'];
+        $headerRow = ['id', 'year', 'month', 'week', 'data', 'game', 'user_id', 'win', 'type_game', 'qtd_games', 'qtd_win', 'type_win_first', 'type_win_second', 'created', 'modified', 'created_by', 'cheat', 'value'];
         $rowFromValues = WriterEntityFactory::createRowFromArray($headerRow);
         $writer->addRow($rowFromValues);
 
