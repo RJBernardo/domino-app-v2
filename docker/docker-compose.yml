@@ -4,6 +4,14 @@
 version: '3.1'
 services:
 
+  composer_installation:
+    container_name: composer_installation_domino
+    image: composer
+    working_dir: /var/www/domino_v2
+    volumes:
+      - ../cakephp:/var/www/domino_v2
+    command: sh -c "composer self-update --1 && composer install --ignore-platform-reqs"
+
   domino_v2-mysql:
     image: 'mysql:8.0'
     container_name: domino_v2-mysql
@@ -21,17 +29,26 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
-  domino_v2:
-    build: ./php-fpm
-    image: 'domino_v2/php-service:7.4'
-    container_name: domino_v2_app
-    restart: always
-    command: sh -c "composer self-update --1 && composer install --ignore-platform-reqs"
+  domino_v2-nginx:
+    image: 'nginx:alpine'
+    container_name: domino_v2-nginx
+    working_dir: /var/www/domino_v2
     volumes:
-      - ../cakephp:/app
-      - ./php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
-    working_dir: "/app"
+        - ../cakephp:/var/www/domino_v2
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
-      - '8184:80'
+     - "8184:80"
+    links:
+     - domino_v2-php-fpm
+
+  domino_v2-php-fpm:
+    build: ./php-fpm
+    container_name: domino_v2-php-fpm
+    working_dir: /var/www/domino_v2
+    #tty: true
+    #command: sh -c "composer install --ignore-platform-reqs"
+    volumes:
+      - ../cakephp:/var/www/domino_v2
+      - ./php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
     links:
       - domino_v2-mysql
